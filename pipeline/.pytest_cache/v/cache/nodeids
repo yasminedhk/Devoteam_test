@@ -1,0 +1,3 @@
+[
+  "tests/node_ingestion_test.py::test_validate_logs_count"
+]
