@@ -1,4 +1,29 @@
-PROJECT_ID = "project-27f747ae-dcc9-44b4-9f8"
-DATASET = "devoteam_test"
-BUCKET_NAME = "devoteam_json"
-FILE_PATH = "rapport.json"
+#calulé par un scripts pour définir les quantiles p90 pour medium et p99 pour high
+metrics:
+  cpu_usage:
+    medium: 78
+    high: 98
+  memory_usage:
+    medium: 78
+    high: 92
+  latency_ms:
+    medium: 233
+    high: 377
+  disk_usage:
+    medium: 78
+    high: 96
+  error_rate:
+    medium: 0.05
+    high: 0.13
+  io_wait:
+    medium: 7
+    high: 14
+  temperature_celsius:
+    medium: 73
+    high: 88
+
+# degraded car le service encore fonctionnel, offline service out
+service_status_severity:
+  online: null
+  degraded: medium
+  offline: high
