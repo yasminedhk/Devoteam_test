@@ -1,17 +1,27 @@
 
 from nodes.node_ingestion_bronze import read_from_gcs, validate_model, write_to_bronze, create_table
+from config.config import PROJECT_ID, DATASET, BUCKET_NAME, FILE_PATH
+import argparse
+
+#Ingestion de données depuis GCS vers BigQuery dans la table bronze partitionnée par jours
 
 def run_ingestion():
-    project_id = "project-27f747ae-dcc9-44b4-9f8"
-    dataset = "devoteam_test"
-    bucket_name = "devoteam_json"
-    file_path = "rapport.json"
-    
-    create_table(project_id,dataset)
-    raw_content = read_from_gcs(bucket_name, file_path)
+    create_table(PROJECT_ID,DATASET,sql_request="sql/create_bronze_table.sql")
+    raw_content = read_from_gcs(BUCKET_NAME, FILE_PATH)
     validated_logs = validate_model(raw_content)
-    write_to_bronze(validated_logs, project_id, dataset, table="bronze_logs")
+    write_to_bronze(validated_logs, PROJECT_ID, DATASET, table="bronze_logs")
     #print(f"{len(validated_logs)} lignes ingérés dans la bronze")
 
 if __name__ == "__main__":
-    run_ingestion()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--step",
+        choices=["ingestion", "analysis", "recommendation", "all"],
+        default="all"
+    )
+    args = parser.parse_args()
+
+    if args.step in ("ingestion", "all"):
+        run_ingestion()
+
+    

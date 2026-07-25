@@ -23,8 +23,6 @@ def read_from_gcs(bucket_name, file_path) -> str:
     return content
 
 def create_table(project_id, dataset, sql_request):
-    sql_request="sql/create_bronze_table.sql"
-
     client = bigquery.Client(project=project_id)              
     with open(sql_request, "r") as f:                             
         ddl = f.read().format(project_id=project_id, dataset=dataset)  
@@ -33,6 +31,7 @@ def create_table(project_id, dataset, sql_request):
     print("Table Bronze vérifiée/créée.")
 
 def validate_model(content):
+    
     raw_logs=json.loads(content)
     if isinstance(raw_logs, dict):
         raw_logs = [raw_logs]
