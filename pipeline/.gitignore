@@ -1,7 +1,0 @@
-# Cache Python
-__pycache__/
-*.pyc
-*.pyo
-
-# Cache pytest
-.pytest_cache/
