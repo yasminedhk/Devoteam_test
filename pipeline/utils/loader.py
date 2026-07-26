@@ -5,13 +5,13 @@ from google.cloud import bigquery
 
 
     
-def create_table(project_id, dataset, sql_request):
+def create_table(project_id, dataset, sql_request,step):
     client = bigquery.Client(project=project_id)              
     with open(sql_request, "r") as f:                             
         ddl = f.read().format(project_id=project_id, dataset=dataset)  
     client.query(ddl).result()
                                      
-    print("Table Bronze vérifiée/créée.")
+    print(f"Table {step} vérifiée/créée.")
 
 def write_partitions(rows, project_id, dataset, table, schema, timestamp ):
     client = bigquery.Client(project=project_id)

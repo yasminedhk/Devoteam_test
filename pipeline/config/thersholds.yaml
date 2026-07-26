@@ -1,4 +1,4 @@
-#calulé par un scripts pour définir les quantiles p90 pour medium et p99 pour high
+#calulé par un scripts pour définir les quantiles p75 pour low p90 pour medium et p99 pour high
 metrics:
   cpu_usage:
     low: 59

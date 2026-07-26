@@ -7,7 +7,7 @@ import argparse
 #Ingestion de données depuis GCS vers BigQuery dans la table bronze partitionnée par jours
 
 def run_ingestion():
-    create_table(PROJECT_ID,DATASET,sql_request="sql/create_bronze_table.sql")
+    create_table(PROJECT_ID,DATASET,sql_request="sql/create_bronze_table.sql",step="BRONZE")
     raw_content = read_from_gcs(BUCKET_NAME, FILE_PATH)
     validated_logs = validate_model(raw_content)
     write_to_bronze(validated_logs, PROJECT_ID, DATASET, table="bronze_logs")
