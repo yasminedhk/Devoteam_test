@@ -1,5 +1,6 @@
 
-from nodes.node_ingestion_bronze import read_from_gcs, validate_model, write_to_bronze, create_table
+from nodes.node_ingestion_bronze import read_from_gcs, validate_model, write_to_bronze
+from utils.loader import create_table
 from config.config import PROJECT_ID, DATASET, BUCKET_NAME, FILE_PATH
 import argparse
 

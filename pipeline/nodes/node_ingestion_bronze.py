@@ -7,6 +7,7 @@ import pandas as pd
 import json
 from models import model
 from itertools import groupby
+from utils.loader import write_partitions
 
 """
     Lecture du json file de storage=> validation du modèle=> écriture brute dans la table bronze partitionnée par jours
@@ -22,14 +23,6 @@ def read_from_gcs(bucket_name, file_path) -> str:
     #print(content)
     return content
 
-def create_table(project_id, dataset, sql_request):
-    client = bigquery.Client(project=project_id)              
-    with open(sql_request, "r") as f:                             
-        ddl = f.read().format(project_id=project_id, dataset=dataset)  
-    client.query(ddl).result()
-                                     
-    print("Table Bronze vérifiée/créée.")
-
 def validate_model(content):
     
     raw_logs=json.loads(content)
@@ -41,11 +34,7 @@ def write_to_bronze(logs,project_id, dataset, table ="bronze_logs"):
     if not logs:
         print("Aucun log")
         return
-    client = bigquery.Client(project=project_id)
-
     rows_to_insert = [log.dict() for log in logs]
-    rows_sorted = sorted(rows_to_insert, key=lambda r: r["timestamp"].date())
-
     schema = [
         bigquery.SchemaField("timestamp", "TIMESTAMP", mode="REQUIRED"),
         bigquery.SchemaField("cpu_usage", "FLOAT64"),
@@ -67,30 +56,17 @@ def write_to_bronze(logs,project_id, dataset, table ="bronze_logs"):
             bigquery.SchemaField("cache", "STRING"),
         ]),
     ]
+    write_partitions(
+        rows=rows_to_insert,
+        project_id=project_id,
+        dataset=dataset,
+        table=table,
+        schema=schema,
+        timestamp="timestamp"
+    )
 
 
-    for date_obj, group in groupby(rows_sorted, key=lambda r: r["timestamp"].date()):
-        rows_for_date = list(group)
-
-        for row in rows_for_date:
-            row["timestamp"] = row["timestamp"].isoformat()
-
-        partition_suffix = date_obj.strftime("%Y%m%d")
-        table_with_partition = f"{project_id}.{dataset}.{table}${partition_suffix}"
-
-        job_config = bigquery.LoadJobConfig(
-            schema=schema,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        )
-
-        job = client.load_table_from_json(
-            rows_for_date,
-            table_with_partition,
-            job_config=job_config,
-        )
-        job.result()
-        print(f"Partition _ {date_obj}_ ecrite : {len(rows_for_date)} ligne.")
+    
 
     # def read_from_bronze_table(project_id, dataset, table="bronze_logs"):
     #     client = bigquery.Client(project=project_id)
