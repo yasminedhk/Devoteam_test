@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `{project_id}.{dataset}.silver_logs` (
   power_consumption_watts FLOAT64,
   has_anomaly BOOLEAN,
   max_severity STRING,
+  max_severity_descriptions ARRAY<STRING>,
   service_status_database STRING,
   service_status_api_gateway STRING,
   service_status_cache STRING

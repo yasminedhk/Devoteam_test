@@ -13,7 +13,7 @@ def create_table(project_id, dataset, sql_request,step):
                                      
     print(f"Table {step} vérifiée/créée.")
 
-def write_partitions(rows, project_id, dataset, table, schema, timestamp ):
+def write_partitions(rows, project_id, dataset, table, schema, timestamp="timestamp") :
     client = bigquery.Client(project=project_id)
     rows_sorted = sorted(rows, key=lambda r: r[timestamp].date())
 
@@ -34,4 +34,9 @@ def write_partitions(rows, project_id, dataset, table, schema, timestamp ):
         job.result()
         print(f"Partition _ {date_obj}_ ecrite : {len(rows_for_date)} ligne.")
 
+def read_gbq_table(project_id, dataset, table):
+    client = bigquery.Client(project=project_id)
+    query = f"SELECT * FROM `{project_id}.{dataset}.{table}`"
+    query_job = f"SELECT * FROM `{project_id}.{dataset}.{table}`"
+    return client.query(query).result().to_dataframe()
     
