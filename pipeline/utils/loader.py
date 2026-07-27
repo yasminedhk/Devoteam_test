@@ -11,7 +11,7 @@ def create_table(project_id, dataset, sql_request,step):
         ddl = f.read().format(project_id=project_id, dataset=dataset)  
     client.query(ddl).result()
                                      
-    print(f"Table {step} vérifiée/créée.")
+    print(f"Table {step} créée.")
 
 def write_partitions(rows, project_id, dataset, table, schema, timestamp="timestamp") :
     client = bigquery.Client(project=project_id)
@@ -37,6 +37,11 @@ def write_partitions(rows, project_id, dataset, table, schema, timestamp="timest
 def read_gbq_table(project_id, dataset, table):
     client = bigquery.Client(project=project_id)
     query = f"SELECT * FROM `{project_id}.{dataset}.{table}`"
-    query_job = f"SELECT * FROM `{project_id}.{dataset}.{table}`"
     return client.query(query).result().to_dataframe()
+
+def count_rows(project_id, dataset, table) -> int:
+    client = bigquery.Client(project=project_id)
+    query = f"SELECT COUNT(*) AS nb_lignes FROM `{project_id}.{dataset}.{table}`"
+    result = list(client.query(query).result())
+    return result[0]["nb_lignes"]
     

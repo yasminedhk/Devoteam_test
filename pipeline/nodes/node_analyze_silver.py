@@ -1,6 +1,7 @@
 import yaml
 from google.cloud import bigquery
 from utils.loader import write_partitions
+from models.model import SilverLogEntry
 import pandas as pd
 
 
@@ -120,6 +121,7 @@ def enrich_silver(logs,thersholds) -> pd.DataFrame:
     df["service_status_cache"] = df["service_status"].apply(lambda s: s["cache"])
 
     df = df.drop(columns=["service_status"])
+    [SilverLogEntry(**row) for row in df.to_dict(orient="records")]
 
     return df
 
