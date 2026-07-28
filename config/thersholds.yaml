@@ -1,0 +1,41 @@
+#calulé par un scripts pour définir les quantiles p75 pour low p90 pour medium et p99 pour high
+metrics:
+  cpu_usage:
+    low: 59
+    medium: 78
+    high: 98
+  memory_usage:
+    low: 67
+    medium: 78
+    high: 92
+  latency_ms:
+    low:  139
+    medium: 232
+    high: 377
+  disk_usage:
+    low: 62
+    medium: 78
+    high: 96
+  error_rate:
+    low: 0.02
+    medium: 0.05
+    high: 0.13
+  io_wait:
+    low: 3
+    medium: 7
+    high: 14
+  temperature_celsius:
+    low: 62
+    medium: 73
+    high: 88
+  power_consumption_watts:
+    low: 259
+    medium: 293
+    high: 384
+
+# degraded car le service encore fonctionnel, offline service out
+service_status_severity:
+  online: null
+  degraded: medium
+  offline: high
+
