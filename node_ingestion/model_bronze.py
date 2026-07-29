@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Literal
 
+"""Pour valider le modele de donnée et les variables avant ingestion et detecter les lignes anormales
+"""
 class ServiceStatus(BaseModel):
     database: Literal["online", "degraded", "offline"]
     api_gateway: Literal["online", "degraded", "offline"]

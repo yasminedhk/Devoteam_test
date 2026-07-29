@@ -5,8 +5,9 @@ from dotenv import load_dotenv
 import os
 import argparse
 from node_analysis.node_analyze_silver import enrich_silver,write_to_silver,load_thereshold
+from node_gold_recommendation.node_gold_recommendation import save_output, run_recommendation_pipeline
 
-
+load_dotenv()
 PROJECT_ID = os.getenv("PROJECT_ID")
 DATASET = os.getenv("DATASET")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
@@ -15,22 +16,26 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 BRONZE_TABLE = os.getenv("BRONZE_TABLE")
 SILVER_TABLE= os.getenv("SILVER_TABLE")
 
-
 #Ingestion de données depuis GCS vers BigQuery dans la table bronze partitionnée par jours
 
 def run_ingestion():
-    create_table(PROJECT_ID,DATASET,sql_request="node_ingestion/create_bronze_table.sql",step="BRONZE")
+    create_table(PROJECT_ID,DATASET,sql_request="node_ingestion/create_bronze_table.sql",step=BRONZE_TABLE)
     raw_content = read_from_gcs(BUCKET_NAME, FILE_PATH)
     validated_logs = validate_model(raw_content)
-    write_to_bronze(validated_logs, PROJECT_ID, DATASET, table="BRONZE_TABLE")
+    write_to_bronze(validated_logs, PROJECT_ID, DATASET, table=BRONZE_TABLE)
     #print(f"{len(validated_logs)} lignes ingérés dans la bronze")
 
 def run_analysis():
-    create_table(PROJECT_ID,DATASET,sql_request="node_analysis/create_silver_table.sql",step="SILVER")
+    create_table(PROJECT_ID,DATASET,sql_request="node_analysis/create_silver_table.sql",step=SILVER_TABLE)
     bronze_logs = read_gbq_table(project_id=PROJECT_ID, dataset=DATASET, table=BRONZE_TABLE)
     thereshold= load_thereshold(path="/Users/yasmine/devoteam/Devoteam_test/config/thersholds.yaml")
     silver_df = enrich_silver(bronze_logs,thereshold)
     write_to_silver(silver_df, project_id=PROJECT_ID, dataset=DATASET,table=SILVER_TABLE)
+
+def run_recommendation():
+    silver_rows = read_gbq_table(project_id=PROJECT_ID, dataset=DATASET, table=SILVER_TABLE)
+    final_reports = run_recommendation_pipeline(silver_rows)
+    save_output(final_reports)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -45,9 +50,10 @@ if __name__ == "__main__":
         run_ingestion()
     
     if args.step in ("analysis", "all"):
-    #    thershold = load_thereshold(path="config/thersholds.yaml")
-    #    print(f"Thresholds loaded: {thershold}")
         run_analysis()
+    
+    if args.step in ("recommendation", "all"):
+        run_recommendation()
 
 
 

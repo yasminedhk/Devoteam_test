@@ -129,8 +129,8 @@ def enrich_silver(logs,thersholds) -> pd.DataFrame:
 
     return df
 
+#zcriture dans la table silver
 def write_to_silver(df, project_id, dataset, table):
-    """Écrit le DataFrame enrichi dans la table Silver."""
     rows = df.to_dict(orient="records")
     write_partitions(
         rows=rows,

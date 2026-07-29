@@ -1,6 +1,10 @@
 import json
 from node_ingestion_bronze import validate_model
 
+"""
+Tests pour m'assurer de la Data quality et m'assurer qu'il n'ai pas de pertes de logs ni de doublons
+"""
+
 #valider qu'on ne perd pas de logs lors de l'ingestion
 def test_validate_logs_count():
     

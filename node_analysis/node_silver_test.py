@@ -2,6 +2,10 @@ from utils.loader import count_rows
 from config.config import PROJECT_ID, DATASET, SILVER_TABLE,BRONZE_TABLE
 from google.cloud import bigquery
 
+"""
+Tests pour m'assurer de la Data quality et m'assurer qu'il n'ai pas de pertes de logs ni d'incohérence dans la data
+"""
+
 #perte de data entre bronze et silver
 def test_silver_row_count_matches_bronze():
     bronze_count = count_rows(PROJECT_ID, DATASET, BRONZE_TABLE)
