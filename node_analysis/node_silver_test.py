@@ -1,7 +1,16 @@
 from utils.loader import count_rows
-from config.config import PROJECT_ID, DATASET, SILVER_TABLE,BRONZE_TABLE
 from google.cloud import bigquery
+from dotenv import load_dotenv
+import os 
 
+load_dotenv()
+PROJECT_ID = os.getenv("PROJECT_ID")
+DATASET = os.getenv("DATASET")
+BUCKET_NAME = os.getenv("BUCKET_NAME")
+FILE_PATH = os.getenv("FILE_PATH") 
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+BRONZE_TABLE = os.getenv("BRONZE_TABLE")
+SILVER_TABLE= os.getenv("SILVER_TABLE")
 """
 Tests pour m'assurer de la Data quality et m'assurer qu'il n'ai pas de pertes de logs ni d'incohérence dans la data
 """
