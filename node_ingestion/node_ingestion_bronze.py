@@ -3,7 +3,6 @@ from google.cloud import storage
 from google.cloud import bigquery
 import json
 import pandas as pd
-import pandas as pd
 import json
 from node_ingestion.model_bronze import LogEntry
 from itertools import groupby
@@ -12,8 +11,6 @@ from utils.loader import write_partitions
 """
     Lecture du json file de storage=> validation du modèle=> écriture brute dans la table bronze partitionnée par jours
     """
-
-project_id = "project-27f747ae-dcc9-44b4-9f8"
 
 def read_from_gcs(bucket_name, file_path) -> str:
     storage_client = storage.Client(project=project_id)

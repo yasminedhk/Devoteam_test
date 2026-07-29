@@ -1,7 +1,6 @@
-# utils/config_loader.py
+
 from google.cloud import bigquery
 from itertools import groupby
-from google.cloud import bigquery
 
 
     
@@ -11,7 +10,7 @@ def create_table(project_id, dataset, sql_request,step):
         ddl = f.read().format(project_id=project_id, dataset=dataset)  
     client.query(ddl).result()
                                      
-    print(f"Table {step} créée.")
+    print(f"Table {step} existante ou créée.")
 
 def write_partitions(rows, project_id, dataset, table, schema, timestamp="timestamp") :
     client = bigquery.Client(project=project_id)

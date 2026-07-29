@@ -28,7 +28,7 @@ def run_ingestion():
 def run_analysis():
     create_table(PROJECT_ID,DATASET,sql_request="node_analysis/create_silver_table.sql",step=SILVER_TABLE)
     bronze_logs = read_gbq_table(project_id=PROJECT_ID, dataset=DATASET, table=BRONZE_TABLE)
-    thereshold= load_thereshold(path="/Users/yasmine/devoteam/Devoteam_test/config/thersholds.yaml")
+    thereshold= load_thereshold(path="config/thersholds.yaml")
     silver_df = enrich_silver(bronze_logs,thereshold)
     write_to_silver(silver_df, project_id=PROJECT_ID, dataset=DATASET,table=SILVER_TABLE)
 
